@@ -1,0 +1,13 @@
+﻿Client/.vs
+Client/obj
+*.zip
+
+!Client/bin/
+Client/bin/*
+!Client/bin/Debug/
+Client/bin/Debug/*
+!Client/bin/Debug/net46/
+Client/bin/Debug/net46/*
+!Client/bin/Debug/net46/VAI-SchizoPMC.dll
+!Client/bin/Debug/net46/VAI-SchizoPMC.pdb
+VAI-SchizoPMC-v1
