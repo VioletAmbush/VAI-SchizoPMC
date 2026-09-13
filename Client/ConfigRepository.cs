@@ -79,7 +79,7 @@ namespace SchizoPMC
             _config = configFile;
 
             BindConfig(Section.GlobalSettings, ToggleKey.ModEnabled, true, "Master switch for the entire mod");
-            BindConfig(Section.GlobalSettings, ToggleKey.RequireGameFocus, true, "Only speak while EscapeFromTarkov window is focused");
+            BindConfig(Section.GlobalSettings, ToggleKey.RequireGameFocus, true, "Only speak while the Tapkov game window is focused");
 
             BindConfig(Section.TriggerSettings, ToggleKey.AutoTalkPanelEnabled, true, "Enable context-aware auto-talk behavior");
             BindConfig(Section.TriggerSettings, ToggleKey.HitCalloutEnabled, true, "Trigger phrase after enemy hit");

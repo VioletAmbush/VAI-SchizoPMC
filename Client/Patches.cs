@@ -1,4 +1,5 @@
 using EFT;
+using EFT.Ballistics;
 using EFT.HealthSystem;
 using EFT.InventoryLogic;
 using HarmonyLib;
@@ -74,8 +75,8 @@ namespace SchizoPMC
             ResetState();
 
             PatchRequired(harmony, AccessTools.Method(typeof(Player), "LateUpdate"), nameof(LateUpdatePostfix), asPrefix: false);
-            PatchRequired(harmony, AccessTools.Method(typeof(Player), "ApplyDamageInfo", new[] { typeof(DamageInfoStruct), typeof(EBodyPart), typeof(EBodyPartColliderType), typeof(float) }), nameof(ApplyDamageInfoPostfix), asPrefix: false);
-            PatchRequired(harmony, AccessTools.Method(typeof(Player), "OnBeenKilledByAggressor", new[] { typeof(IPlayer), typeof(DamageInfoStruct), typeof(EBodyPart), typeof(EDamageType) }), nameof(OnBeenKilledByAggressorPostfix), asPrefix: false);
+            PatchRequired(harmony, AccessTools.Method(typeof(Player), "ApplyDamageInfo", new[] { typeof(DamageInfo), typeof(EBodyPart), typeof(EBodyPartColliderType), typeof(float) }), nameof(ApplyDamageInfoPostfix), asPrefix: false);
+            PatchRequired(harmony, AccessTools.Method(typeof(Player), "OnBeenKilledByAggressor", new[] { typeof(IPlayer), typeof(DamageInfo), typeof(EBodyPart), typeof(EDamageType) }), nameof(OnBeenKilledByAggressorPostfix), asPrefix: false);
             PatchRequired(harmony, AccessTools.Method(typeof(Player), "InventoryOpenRaiseAction", new[] { typeof(bool) }), nameof(InventoryOpenRaiseActionPostfix), asPrefix: false);
             PatchRequired(harmony, AccessTools.Method(typeof(Player), "TryInteractionCallback", new[] { typeof(EFT.Interactive.LootableContainer) }), nameof(TryInteractionCallbackPostfix), asPrefix: false);
             PatchRequired(harmony, AccessTools.Method(typeof(EFT.GamePlayerOwner), "ShowInventoryScreenLoot", new[] { typeof(CompoundItem), typeof(Action), typeof(bool) }), nameof(ShowInventoryScreenLootPostfix), asPrefix: false);
@@ -165,7 +166,7 @@ namespace SchizoPMC
             }
         }
 
-        private static void ApplyDamageInfoPostfix(Player __instance, DamageInfoStruct __0)
+        private static void ApplyDamageInfoPostfix(Player __instance, DamageInfo __0)
         {
             try
             {
@@ -210,7 +211,7 @@ namespace SchizoPMC
             }
         }
 
-        private static void OnBeenKilledByAggressorPostfix(Player __instance, IPlayer __0, DamageInfoStruct __1, EBodyPart __2, EDamageType __3)
+        private static void OnBeenKilledByAggressorPostfix(Player __instance, IPlayer __0, DamageInfo __1, EBodyPart __2, EDamageType __3)
         {
             try
             {
@@ -429,11 +430,11 @@ namespace SchizoPMC
             _nextIdleAt = now + minSeconds + offset;
         }
 
-        private static bool TryResolveLocalAggressor(DamageInfoStruct damageInfo, out Player aggressor)
+        private static bool TryResolveLocalAggressor(DamageInfo damageInfo, out Player aggressor)
         {
             aggressor = null!;
 
-            IPlayerOwner? owner = damageInfo.Player;
+            IObserverToPlayerBridge? owner = damageInfo.Player;
             if (owner?.iPlayer is Player ownerPlayer && ownerPlayer.IsYourPlayer)
             {
                 aggressor = ownerPlayer;
@@ -977,7 +978,7 @@ namespace SchizoPMC
 
             for (int i = 0; i < BodyParts.Length; i++)
             {
-                foreach (IEffect effect in healthController.GetAllActiveEffects(BodyParts[i]))
+                foreach (IHealthEffect effect in healthController.GetAllActiveEffects(BodyParts[i]))
                 {
                     string effectName = effect.GetType().Name;
                     if (effectName.IndexOf("Bleeding", StringComparison.OrdinalIgnoreCase) >= 0)
